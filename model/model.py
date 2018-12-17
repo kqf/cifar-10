@@ -47,23 +47,23 @@ class CNNFeatures(BaseEstimator, TransformerMixin):
         return preds
 
 
-def build_model():
+def build_model(n_components=100):
     model = make_pipeline(
         CNNFeatures(),
         ReportShape("CNN features"),
-        PCA(n_components=1000, whiten=True),
+        PCA(n_components=n_components, whiten=True),
         SVC(gamma="scale"),
     )
     return model
 
 
-def build_shallow_model():
+def build_shallow_model(n_components=100):
     model = make_pipeline(
         FunctionTransformer(
             lambda x: x.reshape(x.shape[0], -1),
             validate=False),
         ReportShape("Pixel features"),
-        PCA(n_components=100, whiten=True),
+        PCA(n_components=n_components, whiten=True),
         ReportShape("PCA"),
         SVC(gamma="scale"),
     )

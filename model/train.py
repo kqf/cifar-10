@@ -1,8 +1,6 @@
 import click
 from model.model import build_model, build_shallow_model
 from model.data import train_test_sample
-from collections import Counter
-import matplotlib.pyplot as plt
 
 
 @click.command()

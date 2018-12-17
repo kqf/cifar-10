@@ -5,13 +5,13 @@ data_file = cifar-10-python.tar.gz
 
 all: data/cifar-10-batches-py
 	@echo "Drawing first 10 samples"
-	# -draw-images --datapath data/cifar-10-batches-py/
+	-draw-images --datapath data/cifar-10-batches-py/
 
 	@echo "Drawing CNN features 2D embedding"
-	# -draw-cnn-features --datapath $<
+	-draw-cnn-features --datapath $<
 
 	@echo "Training shallow model"
-	# -train-shallow --datapath $<
+	-train-shallow --datapath $<
 
 	@echo "Training full model"
 	-train --datapath $<
