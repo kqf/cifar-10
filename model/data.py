@@ -2,7 +2,12 @@ import numpy as np
 import pandas as pd
 import sys
 import pickle
+from sklearn.model_selection import train_test_split
 
+
+def sample(X, y, size):
+    X, _, y, _ = train_test_split(X, y, train_size=size)
+    return X, y
 
 def load_batch(folder_path):
     with open(folder_path, mode='rb') as file:
@@ -23,8 +28,6 @@ def train_test(datapath):
 
 def train_test_sample(datapath, size):
     X_tr, X_te, y_tr, y_te = train_test(datapath)
-
-    possible_indices = np.arange(0, X_tr.shape[0])
-    indices = np.random.choice(possible_indices,
-                               size=int(X_tr.shape[0] * size), replace=False)
-    return X_tr[indices], X_te, y_tr[indices], y_te
+    X_tr, y_tr = sample(X_tr, y_tr, size=size)
+    X_te, y_te = sample(X_te, y_te, size=size)
+    return X_tr, X_te, y_tr, y_te

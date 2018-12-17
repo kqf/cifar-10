@@ -5,6 +5,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import SVC
+from sklearn.decomposition import PCA
 
 
 class ReportShape(BaseEstimator, TransformerMixin):
@@ -50,7 +51,8 @@ def build_model():
     model = make_pipeline(
         CNNFeatures(),
         ReportShape("CNN features"),
-        SVC(C=1e-3, gamma="auto"),
+        PCA(n_components=1000, whiten=True),
+        SVC(gamma="scale"),
     )
     return model
 
@@ -61,6 +63,13 @@ def build_shallow_model():
             lambda x: x.reshape(x.shape[0], -1),
             validate=False),
         ReportShape("Pixel features"),
-        SVC(C=1e-3, gamma="auto"),
+        PCA(n_components=100, whiten=True),
+        ReportShape("PCA"),
+        SVC(gamma="scale"),
     )
+    # This yields following result
+    # Train score 0.8108
+    # Test  score 0.4665
+    # It's clear overfit, one can regularize this model
+    # by decreasing C, or by reducing n_components
     return model

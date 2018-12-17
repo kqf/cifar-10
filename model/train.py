@@ -1,6 +1,8 @@
 import click
 from model.model import build_model, build_shallow_model
 from model.data import train_test_sample
+from collections import Counter
+import matplotlib.pyplot as plt
 
 
 @click.command()
@@ -9,7 +11,7 @@ from model.data import train_test_sample
               help='Path to the CIFAR-10 dataset',
               required=True)
 def train_shallow_model(datapath):
-    X_tr, X_te, y_tr, y_te = train_test_sample(datapath, size=0.1)
+    X_tr, X_te, y_tr, y_te = train_test_sample(datapath, size=0.2)
     model = build_shallow_model().fit(X_tr, y_tr)
     # NB: Use accuracy as classes are ballanced
     print("Train score", model.score(X_tr, y_tr))
@@ -22,8 +24,7 @@ def train_shallow_model(datapath):
               help='Path to the CIFAR-10 dataset',
               required=True)
 def train_model(datapath):
-    X_tr, X_te, y_tr, y_te = train_test_sample(datapath, size=0.1)
+    X_tr, X_te, y_tr, y_te = train_test_sample(datapath, size=0.2)
     model = build_model().fit(X_tr, y_tr)
-
     print("Train score", model.score(X_tr, y_tr))
     print("Test  score", model.score(X_te, y_te))
