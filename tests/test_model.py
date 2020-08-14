@@ -3,6 +3,7 @@ from model.model import build_model, build_shallow_model
 from model.data import train_test_sample
 
 
+@pytest.mark.skip()
 @pytest.mark.parametrize("build", [
     build_model,
     build_shallow_model

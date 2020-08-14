@@ -3,6 +3,7 @@ from model.model import CNNFeatures
 from model.data import train_test_sample
 
 
+@pytest.mark.skip()
 @pytest.mark.filterwarnings("ignore:RuntimeWarning")
 def test_creates_features(datapath):
     X_tr, X_te, y_tr, y_te = train_test_sample(datapath, size=0.1)
