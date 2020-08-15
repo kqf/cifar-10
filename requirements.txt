@@ -4,7 +4,7 @@ pandas
 pytest
 click
 matplotlib
-tensorflow
-cython # required by tensornets
-tensornets
 scikit-learn
+torch
+torchvision
+skorch
