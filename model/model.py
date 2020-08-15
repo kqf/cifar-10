@@ -8,6 +8,8 @@ class VisualModule(torch.nn.Module):
     def __init__(self, backbone):
         super().__init__()
         self.backbone = backbone
+        # Remove the last layer
+        self.backbone.fc = torch.nn.Identity()
 
     def forward(self, x):
         return self.backbone(x)
@@ -33,13 +35,8 @@ def build_features(max_epochs=2, lr=1e-4):
     model = FeatureExtractorNet(
         module=VisualModule,
         module__backbone=backbone,
-        criterion=torch.nn.CrossEntropyLoss,
-        optimizer=torch.optim.Adam,
-        optimizer__lr=lr,
-        max_epochs=max_epochs,
-        batch_size=10,
-        iterator_train__num_workers=4,
-        iterator_train__shuffle=True,
+        criterion=torch.nn.CrossEntropyLoss,  # Not used
+        iterator_train=None,
         iterator_valid__shuffle=False,
         iterator_valid__num_workers=4,
         device=device,
