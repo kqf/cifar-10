@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 
 
 class VisualModule(torch.nn.Module):
-    def __init__(self, backbone, classify=False, n_output):
+    def __init__(self, backbone, classify=False, n_output=10):
         super().__init__()
         self.backbone = backbone
 
@@ -23,21 +23,19 @@ class VisionClassifierNet(skorch.NeuralNet):
         return accuracy_score(preds, y)
 
 
-def build_model(batch_norm=True, lr=1e-4):
+def build_features(max_epochs=2, lr=1e-4):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     backbone = torchvision.models.resnet18(pretrained=True)
     model = VisionClassifierNet(
-        module=Classifier,
-        module_backbone=backbone,
+        module=VisualModule,
+        module__backbone=backbone,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.Adam,
         optimizer__lr=lr,
-        max_epochs=2,
-        batch_size=256,
-        iterator_train=DataIterator,
+        max_epochs=max_epochs,
+        batch_size=10,
         iterator_train__shuffle=True,
-        iterator_valid=DataIterator,
         iterator_valid__shuffle=False,
         device=device,
     )
@@ -72,16 +70,13 @@ def main():
         transform=train_transform,
     )
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = build_model(device).fit(train)
-
     test = torchvision.datasets.CIFAR10(
         root="./data",
         train=False,
         download=True,
         transform=test_transform,
     )
-    print(model.predict(test))
+    # print(model.predict(test))
 
 
 if __name__ == "__main__":
