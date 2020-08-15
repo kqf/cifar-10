@@ -8,8 +8,13 @@ class VisualModule(torch.nn.Module):
     def __init__(self, backbone):
         super().__init__()
         self.backbone = backbone
+
         # Remove the last layer
         self.backbone.fc = torch.nn.Identity()
+
+        # Freze all the parameters
+        for parameter in self.parameters():
+            parameter.requires_grad = False
 
     def forward(self, x):
         return self.backbone(x)
