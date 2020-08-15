@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 
 
 class VisualModule(torch.nn.Module):
-    def __init__(self, backbone, classify=False, n_output=10):
+    def __init__(self, backbone):
         super().__init__()
         self.backbone = backbone
 
@@ -13,10 +13,13 @@ class VisualModule(torch.nn.Module):
         return self.backbone(x)
 
 
-class VisionClassifierNet(skorch.NeuralNet):
+class FeatureExtractorNet(skorch.NeuralNet):
     def predict(self, dataset):
         probas = self.predict_proba(dataset)
         return probas.argmax(-1)
+
+    def transform(self, dataset):
+        return self.predict_proba(dataset)
 
     def score(self, X, y):
         preds = self.predict(X)
@@ -27,7 +30,7 @@ def build_features(max_epochs=2, lr=1e-4):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     backbone = torchvision.models.resnet18(pretrained=True)
-    model = VisionClassifierNet(
+    model = FeatureExtractorNet(
         module=VisualModule,
         module__backbone=backbone,
         criterion=torch.nn.CrossEntropyLoss,
@@ -35,8 +38,10 @@ def build_features(max_epochs=2, lr=1e-4):
         optimizer__lr=lr,
         max_epochs=max_epochs,
         batch_size=10,
+        iterator_train__num_workers=4,
         iterator_train__shuffle=True,
         iterator_valid__shuffle=False,
+        iterator_valid__num_workers=4,
         device=device,
     )
     return model
