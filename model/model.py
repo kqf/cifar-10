@@ -4,6 +4,8 @@ import torchvision
 
 from sklearn.metrics import accuracy_score
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import make_pipeline
+from sklearn.svm import SVC
 
 
 class VisualModule(torch.nn.Module):
@@ -61,6 +63,15 @@ class ReportShape(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         print("Reporting shape for {}: {}".format(self.msg, X.shape))
         return X
+
+
+def build_model():
+    model = make_pipeline(
+        build_features(),
+        ReportShape("CNN features"),
+        SVC(),
+    )
+    return model
 
 
 def main():
