@@ -1,7 +1,9 @@
 import skorch
 import torch
 import torchvision
+
 from sklearn.metrics import accuracy_score
+from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class VisualModule(torch.nn.Module):
@@ -47,6 +49,18 @@ def build_features(max_epochs=2, lr=1e-4):
         device=device,
     )
     return model
+
+
+class ReportShape(BaseEstimator, TransformerMixin):
+    def __init__(self, msg):
+        self.msg = msg
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        print("Reporting shape for {}: {}".format(self.msg, X.shape))
+        return X
 
 
 def main():
