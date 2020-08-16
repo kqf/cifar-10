@@ -9,5 +9,5 @@ from model.model import build_model
     # build_shallow_model
 ])
 def test_handles_model(build, data, labels):
-    model = build().fit(data)
-    assert model.score(data) > 0.1
+    model = build().fit(data, labels)
+    assert model.score(data, labels) > 0.1

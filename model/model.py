@@ -29,6 +29,10 @@ class FeatureExtractorNet(skorch.NeuralNet):
         probas = self.predict_proba(dataset)
         return probas.argmax(-1)
 
+    def fit(self, X, y=None):
+        self.initialize()
+        return self
+
     def transform(self, dataset):
         return self.predict_proba(dataset)
 
