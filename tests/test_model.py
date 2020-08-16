@@ -8,6 +8,6 @@ from model.model import build_model
     build_model,
     # build_shallow_model
 ])
-def test_handles_model(build, data):
+def test_handles_model(build, data, labels):
     model = build().fit(data)
     assert model.score(data) > 0.1

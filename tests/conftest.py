@@ -23,3 +23,8 @@ def data():
     )
     data, _ = torch.utils.data.random_split(test, [100, len(test) - 100])
     return data
+
+
+@pytest.fixture
+def labels(data):
+    return [l for _, l in data]
