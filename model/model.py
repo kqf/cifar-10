@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import SVC
+from sklearn.metrics import f1_score
 
 
 class VisualModule(torch.nn.Module):
@@ -113,8 +114,8 @@ def main():
     )
     y_te = tolabels(X_te)
 
-    print("Train accuracy: ", model.score(X_te, y_te))
-    print("Test accuracy: ", model.score(X_te, y_te))
+    print("Test f1: {: <5}".format(f1_score(y_tr, model.predict(X_tr))))
+    print("Train f1: {: <5}".format(f1_score(y_te, model.predict(X_te))))
 
 
 if __name__ == "__main__":

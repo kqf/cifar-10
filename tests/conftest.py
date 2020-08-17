@@ -2,6 +2,8 @@ import pytest
 import torch
 import torchvision
 
+from model.model import tolabels
+
 
 @pytest.fixture
 def data():
@@ -27,4 +29,4 @@ def data():
 
 @pytest.fixture
 def labels(data):
-    return [l for _, l in data]
+    return tolabels(data)
