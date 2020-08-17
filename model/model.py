@@ -78,41 +78,43 @@ def build_model():
     return model
 
 
+def tolabels(data):
+    return [l for _, l in data]
+
+
 def main():
     # See https://pytorch.org/docs/stable/torchvision/models.html
     pretrained_size = 224
     pretrained_means = [0.485, 0.456, 0.406]
     pretrained_stds = [0.229, 0.224, 0.225]
 
-    train_transform = torchvision.transforms.Compose([
-        torchvision.transforms.Resize(pretrained_size),
-        torchvision.transforms.RandomRotation(5),
-        torchvision.transforms.RandomHorizontalFlip(0.5),
-        torchvision.transforms.RandomCrop(pretrained_size, padding=10),
-        torchvision.transforms.ToTensor(),
-        torchvision.transforms.Normalize(pretrained_means, pretrained_stds)
-    ])
-
-    test_transform = torchvision.transforms.Compose([
+    transform = torchvision.transforms.Compose([
         torchvision.transforms.Resize(pretrained_size),
         torchvision.transforms.ToTensor(),
         torchvision.transforms.Normalize(pretrained_means, pretrained_stds)
     ])
 
-    train = torchvision.datasets.CIFAR10(
+    X_tr = torchvision.datasets.CIFAR10(
         root="./data",
         train=True,
         download=True,
-        transform=train_transform,
+        transform=transform,
     )
+    y_tr = tolabels(X_tr)
 
-    test = torchvision.datasets.CIFAR10(
+    model = build_model()
+    model.fit(X_tr, y_tr)
+
+    X_te = torchvision.datasets.CIFAR10(
         root="./data",
         train=False,
         download=True,
-        transform=test_transform,
+        transform=transform,
     )
-    # print(model.predict(test))
+    y_te = tolabels(X_te)
+
+    print("Train accuracy: ", model.score(X_te, y_te))
+    print("Test accuracy: ", model.score(X_te, y_te))
 
 
 if __name__ == "__main__":
