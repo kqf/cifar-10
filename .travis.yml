@@ -4,11 +4,7 @@ language:
 python:
   - "3.6"
 
-before_install:
-  - sudo apt-get install unar
-
 install:
-  - pip install cython
   - pip install -r requirements.txt
   - pip install .
   - make data/cifar-10-batches-py
