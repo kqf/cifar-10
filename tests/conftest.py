@@ -6,7 +6,7 @@ from model.model import tolabels
 
 
 @pytest.fixture
-def data():
+def data(size=100):
     pretrained_size = 224
     pretrained_means = [0.485, 0.456, 0.406]
     pretrained_stds = [0.229, 0.224, 0.225]
@@ -23,7 +23,7 @@ def data():
         download=True,
         transform=test_transform,
     )
-    data, _ = torch.utils.data.random_split(test, [100, len(test) - 100])
+    data, _ = torch.utils.data.random_split(test, [size, len(test) - size])
     return data
 
 
