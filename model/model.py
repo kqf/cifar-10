@@ -8,6 +8,12 @@ from sklearn.pipeline import make_pipeline
 from sklearn.svm import SVC
 from sklearn.metrics import f1_score
 
+"""
+# colab install
+
+!pip install skorch torch torchvision scikit-learn
+"""
+
 
 class VisualModule(torch.nn.Module):
     def __init__(self, backbone):
