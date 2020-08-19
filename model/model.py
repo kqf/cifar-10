@@ -64,7 +64,7 @@ def build_features(max_epochs=2, lr=1e-4):
     model = FeatureExtractorNet(
         module=VisualModule,
         module__backbone=backbone,
-        module__flat=True,
+        module__flat=False,
         criterion=torch.nn.CrossEntropyLoss,  # Not used
         iterator_train=None,
         iterator_valid__shuffle=False,
@@ -130,8 +130,11 @@ def main():
     )
     y_te = tolabels(X_te)
 
-    print("Test f1: {: <5}".format(f1_score(y_tr, model.predict(X_tr))))
-    print("Train f1: {: <5}".format(f1_score(y_te, model.predict(X_te))))
+    f1_tr = f1_score(y_tr, model.predict(X_tr), average="macro")
+    print(f"Train f1: {f1_tr: <5}")
+
+    f1_te = f1_score(y_te, model.predict(X_te), average="macro")
+    print(f"Test f1: {f1_te: <5}".format())
 
 
 if __name__ == "__main__":
