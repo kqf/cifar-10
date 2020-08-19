@@ -16,9 +16,10 @@ from sklearn.metrics import f1_score
 
 
 class VisualModule(torch.nn.Module):
-    def __init__(self, backbone):
+    def __init__(self, backbone, flat=False):
         super().__init__()
         self.backbone = backbone
+        self.flat = flat
 
         # Remove the last layer
         self.backbone.fc = torch.nn.Identity()
@@ -28,7 +29,15 @@ class VisualModule(torch.nn.Module):
             parameter.requires_grad = False
 
     def forward(self, x):
+        if self.flat:
+            return x.reshape(x.shape[0], -1)
+
         return self.backbone(x)
+
+
+class FlatModule(torch.nn.Module):
+    def forward(self, x):
+        return x.reshape(x.shape[0], -1)
 
 
 class FeatureExtractorNet(skorch.NeuralNet):
@@ -55,6 +64,7 @@ def build_features(max_epochs=2, lr=1e-4):
     model = FeatureExtractorNet(
         module=VisualModule,
         module__backbone=backbone,
+        module__flat=True,
         criterion=torch.nn.CrossEntropyLoss,  # Not used
         iterator_train=None,
         iterator_valid__shuffle=False,
