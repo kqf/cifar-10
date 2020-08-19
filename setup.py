@@ -9,7 +9,7 @@ setup(
             "draw-images=model.visualize:draw_images",
             "draw-cnn-features=model.visualize:draw_cnn_features",
             "train-shallow=model.train:train_shallow_model",
-            "train=model.train:train_model",
+            "train=model.model:main",
         ],
     }
 )

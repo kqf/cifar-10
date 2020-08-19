@@ -1,14 +1,14 @@
 all: 
 	@echo "Drawing first 10 samples"
-	-draw-images --datapath data/cifar-10-batches-py/
+	-draw-images
 
 	@echo "Drawing CNN features 2D embedding"
-	-draw-cnn-features --datapath $<
+	-draw-cnn-features
 
 	@echo "Training shallow model"
-	-train-shallow --datapath $<
+	-train-shallow
 
 	@echo "Training full model"
-	-train --datapath $<
+	-train
 
 .PHONY: all

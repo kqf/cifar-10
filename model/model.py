@@ -1,3 +1,4 @@
+import click
 import skorch
 import torch
 import torchvision
