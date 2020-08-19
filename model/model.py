@@ -57,14 +57,14 @@ class FeatureExtractorNet(skorch.NeuralNet):
         return accuracy_score(preds, y)
 
 
-def build_features(max_epochs=2, lr=1e-4):
+def build_features(flat=False, max_epochs=2, lr=1e-4):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     backbone = torchvision.models.resnet18(pretrained=True)
     model = FeatureExtractorNet(
         module=VisualModule,
         module__backbone=backbone,
-        module__flat=False,
+        module__flat=flat,
         criterion=torch.nn.CrossEntropyLoss,  # Not used
         iterator_train=None,
         iterator_valid__shuffle=False,
@@ -89,6 +89,15 @@ class ReportShape(BaseEstimator, TransformerMixin):
 def build_model():
     model = make_pipeline(
         build_features(),
+        ReportShape("CNN features"),
+        SVC(),
+    )
+    return model
+
+
+def build_shallow_model():
+    model = make_pipeline(
+        build_features(flat=True),
         ReportShape("CNN features"),
         SVC(),
     )
