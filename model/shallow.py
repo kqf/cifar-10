@@ -88,15 +88,6 @@ class ReportShape(BaseEstimator, TransformerMixin):
 
 def build_model():
     model = make_pipeline(
-        build_features(),
-        ReportShape("CNN features"),
-        SVC(),
-    )
-    return model
-
-
-def build_shallow_model():
-    model = make_pipeline(
         build_features(flat=True),
         ReportShape("CNN features"),
         SVC(),

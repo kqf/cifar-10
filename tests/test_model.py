@@ -1,7 +1,7 @@
 import pytest
 
 from model.model import build_model
-from model.model import build_shallow_model
+from model.shallow import build_model as build_shallow_model
 
 
 @pytest.mark.parametrize("build", [
