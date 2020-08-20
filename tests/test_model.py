@@ -5,7 +5,7 @@ from model.shallow import build_model as build_shallow_model
 
 
 @pytest.mark.parametrize("build", [
-    build_model,
+    # build_model,
     build_shallow_model
 ])
 def test_handles_model(build, data, labels):

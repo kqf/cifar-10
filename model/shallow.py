@@ -1,8 +1,6 @@
-import skorch
 import torch
 import torchvision
 
-from sklearn.metrics import accuracy_score
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import SVC
@@ -11,67 +9,19 @@ from sklearn.metrics import f1_score
 """
 # colab install
 
-!pip install skorch torch torchvision scikit-learn
+!pip install torch torchvision scikit-learn
 """
 
 
-class VisualModule(torch.nn.Module):
-    def __init__(self, backbone, flat=False):
-        super().__init__()
-        self.backbone = backbone
-        self.flat = flat
-
-        # Remove the last layer
-        self.backbone.fc = torch.nn.Identity()
-
-        # Freze all the parameters
-        for parameter in self.parameters():
-            parameter.requires_grad = False
-
-    def forward(self, x):
-        if self.flat:
-            return x.reshape(x.shape[0], -1)
-
-        return self.backbone(x)
-
-
-class FlatModule(torch.nn.Module):
-    def forward(self, x):
-        return x.reshape(x.shape[0], -1)
-
-
-class FeatureExtractorNet(skorch.NeuralNet):
-    def predict(self, dataset):
-        probas = self.predict_proba(dataset)
-        return probas.argmax(-1)
-
+class FeatureExtractor(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
-        self.initialize()
         return self
 
-    def transform(self, dataset):
-        return self.predict_proba(dataset)
-
-    def score(self, X, y):
-        preds = self.predict(X)
-        return accuracy_score(preds, y)
-
-
-def build_features(flat=False, max_epochs=2, lr=1e-4):
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    backbone = torchvision.models.resnet18(pretrained=True)
-    model = FeatureExtractorNet(
-        module=VisualModule,
-        module__backbone=backbone,
-        module__flat=flat,
-        criterion=torch.nn.CrossEntropyLoss,  # Not used
-        iterator_train=None,
-        iterator_valid__shuffle=False,
-        iterator_valid__num_workers=4,
-        device=device,
-    )
-    return model
+    def transform(self, X, y=None):
+        data = []
+        for i, (x, y) in enumerate(X):
+            data.append(x.reshape(1, -1))
+        return torch.cat(data).detach().cpu().numpy()
 
 
 class ReportShape(BaseEstimator, TransformerMixin):
@@ -88,7 +38,7 @@ class ReportShape(BaseEstimator, TransformerMixin):
 
 def build_model():
     model = make_pipeline(
-        build_features(flat=True),
+        FeatureExtractor(),
         ReportShape("CNN features"),
         SVC(),
     )
