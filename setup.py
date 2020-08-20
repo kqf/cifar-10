@@ -8,7 +8,7 @@ setup(
         "console_scripts": [
             "draw-images=model.visualize:draw_images",
             "draw-cnn-features=model.visualize:draw_cnn_features",
-            "train-shallow=model.train:train_shallow_model",
+            "train-shallow=model.shallow:main",
             "train=model.model:main",
         ],
     }
