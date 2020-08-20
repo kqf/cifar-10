@@ -2,7 +2,7 @@ import pytest
 import torch
 import torchvision
 
-from model.model import tolabels
+from model.cnnfeatures import tolabels
 
 
 @pytest.fixture
