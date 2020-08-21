@@ -1,7 +1,6 @@
-from model.model import build_features
+from model.cnnfeatures import FeatureExtractor
 
 
 def test_creates_features(data):
-    model = build_features()
-    model.initialize()
+    model = FeatureExtractor()
     assert model.transform(data).shape == (len(data), 512)

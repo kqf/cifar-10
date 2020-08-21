@@ -70,7 +70,7 @@ def build_model():
     model = make_pipeline(
         FeatureExtractor(device),
         ReportShape("CNN features"),
-        SVC(),
+        SVC(C=0.8),
     )
     return model
 
