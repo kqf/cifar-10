@@ -7,7 +7,6 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install .
-  - make data/cifar-10-batches-py
 
 script:
   - pytest
