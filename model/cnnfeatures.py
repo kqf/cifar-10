@@ -30,29 +30,26 @@ class VisualModule(torch.nn.Module):
         return self.backbone(x)
 
 
-class FeatureExtractorNet(skorch.NeuralNet):
+class FeatureExtractor(BaseEstimator, TransformerMixin):
+    def __init__(self, device=torch.device("cpu"), batch_size=128):
+        self.batch_size = batch_size
+        self.backbone = torchvision.models.resnet18(pretrained=True)
+        self.backbone.fc = torch.nn.Identity()
+        self.backbone.to(device)
+        self.device = device
+
     def fit(self, X, y=None):
-        self.initialize()
         return self
 
-    def transform(self, dataset):
-        return self.predict_proba(dataset)
+    def transform(self, X, y=None):
+        data = torch.utils.data.DataLoader(X, batch_size=self.batch_size)
 
+        output = []
+        for batch, y in data:
+            with torch.no_grad():
+                output.append(self.backbone(batch.to(self.device)))
 
-def build_features(max_epochs=2, lr=1e-4):
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    backbone = torchvision.models.resnet18(pretrained=True)
-    model = FeatureExtractorNet(
-        module=VisualModule,
-        module__backbone=backbone,
-        criterion=torch.nn.CrossEntropyLoss,  # Not used
-        iterator_train=None,
-        iterator_valid__shuffle=False,
-        iterator_valid__num_workers=4,
-        device=device,
-    )
-    return model
+        return torch.cat(output).detach().cpu().numpy()
 
 
 class ReportShape(BaseEstimator, TransformerMixin):
@@ -68,8 +65,10 @@ class ReportShape(BaseEstimator, TransformerMixin):
 
 
 def build_model():
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     model = make_pipeline(
-        build_features(),
+        FeatureExtractor(device),
         ReportShape("CNN features"),
         SVC(),
     )
