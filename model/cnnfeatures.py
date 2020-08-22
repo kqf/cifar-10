@@ -1,4 +1,3 @@
-import skorch
 import torch
 import torchvision
 
@@ -10,7 +9,7 @@ from sklearn.metrics import f1_score
 """
 # colab install
 
-!pip install skorch torch torchvision scikit-learn
+!pip install torch torchvision scikit-learn
 """
 
 
@@ -45,6 +44,7 @@ def train_test_set():
         transform=transform,
     )
     y_te = tolabels(X_te)
+    return X_tr, X_te, y_tr, y_te
 
 
 class VisualModule(torch.nn.Module):
