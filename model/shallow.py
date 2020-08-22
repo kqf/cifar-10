@@ -13,6 +13,10 @@ from sklearn.metrics import f1_score
 """
 
 
+def tolabels(data):
+    return [l for _, l in data]
+
+
 def train_test_set():
     # See https://pytorch.org/docs/stable/torchvision/models.html
     pretrained_size = 224
@@ -74,10 +78,6 @@ def build_model():
         SVC(C=0.1),
     )
     return model
-
-
-def tolabels(data):
-    return [l for _, l in data]
 
 
 def main():
