@@ -18,15 +18,20 @@ def tolabels(data):
 
 
 def train_test_set():
-    # See https://pytorch.org/docs/stable/torchvision/models.html
-    pretrained_size = 224
-    pretrained_means = [0.485, 0.456, 0.406]
-    pretrained_stds = [0.229, 0.224, 0.225]
+    # Read the data without any transformations (to calculate stats)
+    raw = torchvision.datasets.CIFAR10(
+        root="./data",
+        train=True,
+        download=True,
+    )
 
+    means = raw.data.mean(axis=(0, 1, 2)) / 255
+    stds = raw.data.std(axis=(0, 1, 2)) / 255
+
+    # Normalize the features
     transform = torchvision.transforms.Compose([
-        torchvision.transforms.Resize(pretrained_size),
         torchvision.transforms.ToTensor(),
-        torchvision.transforms.Normalize(pretrained_means, pretrained_stds)
+        torchvision.transforms.Normalize(means, stds)
     ])
 
     X_tr = torchvision.datasets.CIFAR10(
@@ -44,7 +49,6 @@ def train_test_set():
         transform=transform,
     )
     y_te = tolabels(X_te)
-
     return X_tr, X_te, y_tr, y_te
 
 
@@ -82,6 +86,7 @@ def build_model():
 
 def main():
     X_tr, X_te, y_tr, y_te = train_test_set()
+    return
     model = build_model()
     model.fit(X_tr, y_tr)
 
