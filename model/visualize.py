@@ -29,7 +29,9 @@ def plot_images(images, classes, labels=None, normalize=False):
     fig.show()
 
 
-def draw_images(nimages=10):
+@click.command()
+@click.option('--nimages', type=int, default=9)
+def draw_images(nimages):
     X_tr, *_ = train_test_set()
     images, labels = zip(*[X_tr[i]for i in range(nimages)])
     plot_images(images, labels)
