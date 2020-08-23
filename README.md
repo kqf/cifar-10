@@ -6,12 +6,12 @@ This dataset can be visualized as two-dimensional embedding:
 ![pixels](exploration/pixel-features.png)
 
 
-## Solution
-The main idea is to use large CNN network as encoder to extract features from these images automatically, and train a model on top of these features. It looks like ResNet50 architecture is a good choice due to low memory and CPU cost.
+## The model
+The main idea is to use large CNN network as encoder to extract features from these images automatically, and train a model on top of these features. It looks like ResNet architecture is a good choice due to low memory and CPU cost.
 
 ![ResNet](exploration/ResNet50.png)
 
-Two-dimensional representation of ResNet-50 features using tSNE:
+Two-dimensional representation of ResNet features using tSNE:
 ![ResNet-features](exploration/resnet50-features.png)
 
 The parameters are still to be tuned, as this task is memory intensive.
@@ -19,10 +19,6 @@ The parameters are still to be tuned, as this task is memory intensive.
 
 ## Install
 ```bash
-
-# First install cython
-pip install cython
-
 # Install other requirements
 pip install -r requirements.txt
 
@@ -31,8 +27,8 @@ pip install .
 ```
 
 
-## Run the solution
-To run the solution do
+## Run everything 
+To run the model and visualisations do
 ```bash
 make 
 ```

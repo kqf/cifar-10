@@ -9,7 +9,7 @@ from model.cnnfeatures import train_test_set
 
 def plot_images(images, classes, labels=None, normalize=False):
     n_images = len(images)
-    rows, cols = int(np.sqrt(n_images)), int(np.sqrt(images))
+    rows, cols = int(np.sqrt(n_images)), int(np.sqrt(n_images))
 
     fig = plt.figure(figsize=(10, 10))
     for i in range(rows * cols):
@@ -26,12 +26,13 @@ def plot_images(images, classes, labels=None, normalize=False):
         if labels is not None:
             ax.set_title(classes[labels[i]])
         ax.axis('off')
+    fig.show()
 
 
 def draw_images(nimages=10):
-    X_tr, _, y_tr, _ = train_test_set()
-    import ipdb; ipdb.set_trace(); import IPython; IPython.embed() # noqa
-    plot_images(X_tr[:nimages], y_tr[:nimages])
+    X_tr, *_ = train_test_set()
+    images, labels = zip(*[X_tr[i]for i in range(nimages)])
+    plot_images(images, labels)
 
 
 @click.command()
