@@ -1,10 +1,11 @@
 import click
+import torch
 import numpy as np
 from sklearn.pipeline import make_pipeline
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 
-from model.cnnfeatures import train_test_set
+from model.cnnfeatures import train_test_set, FeatureExtractor
 
 
 def plot_images(images, classes, labels=None, normalize=False):
@@ -38,15 +39,13 @@ def draw_images(nimages):
 
 
 @click.command()
-@click.option('--datapath',
-              type=click.Path(exists=True),
-              help='Path to the CIFAR-10 dataset',
-              required=True)
-def draw_cnn_features(datapath):
-    X_tr, _, y_tr, _ = train_test_sample(datapath, size=0.1)
+@click.option('--size', type=int, default=1000)
+def draw_cnn_features(size):
+    X_tr, _, y_tr, _ = train_test_set()
+    # Use a small sample to train TSNe
+    data, _ = torch.utils.data.random_split(X_tr, [size, len(X_tr) - size])
     model = make_pipeline(
-        CNNFeatures(n_batches=1),
-        ReportShape("CNN features"),
+        FeatureExtractor(),
         TSNE(n_components=2),
     )
     plt.figure(figsize=(8, 4))
