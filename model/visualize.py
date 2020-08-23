@@ -1,32 +1,37 @@
 import click
+import numpy as np
 from sklearn.pipeline import make_pipeline
-# from sklearn.manifold import MDS
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 
-
-from model.data import train_test, train_test_sample
-from model.model import CNNFeatures, ReportShape, Resizer
+from model.cnnfeatures import train_test_set
 
 
-@click.command()
-@click.option('--datapath',
-              type=click.Path(exists=True),
-              help='Path to the CIFAR-10 dataset',
-              required=True)
-def draw_images(datapath, nimages=10):
-    X_tr, _, y_tr, _ = train_test(datapath)
-    classes, index = set(), 0
-    fig = plt.figure(figsize=(8, 4))
-    while len(classes) < 10:
-        if y_tr[index] in classes:
-            index += 1
-            continue
-        fig.add_subplot(2, nimages / 2, len(classes) + 1)
-        plt.imshow(X_tr[index])
-        classes.add(y_tr[index])
-    plt.tight_layout()
-    plt.show()
+def plot_images(images, classes, labels=None, normalize=False):
+    n_images = len(images)
+    rows, cols = int(np.sqrt(n_images)), int(np.sqrt(images))
+
+    fig = plt.figure(figsize=(10, 10))
+    for i in range(rows * cols):
+        ax = fig.add_subplot(rows, cols, i + 1)
+        image = images[i]
+
+        if normalize:
+            image_min = image.min()
+            image_max = image.max()
+            image.clamp_(min=image_min, max=image_max)
+            image.add_(-image_min).div_(image_max - image_min + 1e-5)
+
+        ax.imshow(image.permute(1, 2, 0).cpu().numpy())
+        if labels is not None:
+            ax.set_title(classes[labels[i]])
+        ax.axis('off')
+
+
+def draw_images(nimages=10):
+    X_tr, _, y_tr, _ = train_test_set()
+    import ipdb; ipdb.set_trace(); import IPython; IPython.embed() # noqa
+    plot_images(X_tr[:nimages], y_tr[:nimages])
 
 
 @click.command()
