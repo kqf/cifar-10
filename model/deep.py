@@ -48,17 +48,20 @@ def train_test_set():
 class ClassifierModule(torch.nn.Module):
     def __init__(self, backbone, output_dim):
         super().__init__()
-        self.fc = torch.nn.Linear(3 * 224 * 224, output_dim)
+        self.backbone = backbone
+        in_features = backbone.fc.in_features
+        self.backbone.fc = torch.nn.Linear(in_features, output_dim)
 
     def forward(self, x):
-        return self.fc(x.reshape(x.shape[0], -1))
+        return self.backbone(x)
 
 
 def build_model(lr=1e-4, max_epochs=2):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     model = skorch.NeuralNetClassifier(
         module=ClassifierModule,
-        module__backbone=None,
+        module__backbone=torchvision.models.resnet18(pretrained=True),
         module__output_dim=10,
         criterion=torch.nn.CrossEntropyLoss,
         optimizer=torch.optim.Adam,
