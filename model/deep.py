@@ -1,20 +1,15 @@
 import skorch
 import torch
 import torchvision
-import random
-import operator
-import numpy as np
-
-from sklearn.metrics import accuracy_score
 
 
 class ClassifierModule(torch.nn.Module):
     def __init__(self, backbone, output_dim):
         super().__init__()
-        self.fc = torch.nn.Linear(32 * 32 * 3, output_dim)
+        self.fc = torch.nn.Linear(3 * 224 * 224, output_dim)
 
     def forward(self, x):
-        return x.reshape(-1, 1)
+        return self.fc(x.reshape(x.shape[0], -1))
 
 
 def build_model(lr=1e-4, max_epochs=2):
