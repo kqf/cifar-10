@@ -1,5 +1,6 @@
 import torch
 import torchvision
+import numpy as np
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline
@@ -14,7 +15,7 @@ from sklearn.metrics import f1_score
 
 
 def tolabels(data):
-    return [l for _, l in data]
+    return np.array([l for _, l in data])
 
 
 def train_test_set():
