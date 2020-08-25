@@ -57,6 +57,16 @@ class ClassifierModule(torch.nn.Module):
         return self.backbone(x)
 
 
+class ReportParams(skorch.callbacks.Callback):
+    def on_train_begin(self, net, X, y):
+        n_pars = self.count_parameters(net.module_)
+        print(f"The model has {n_pars:,} trainable parameters")
+
+    @staticmethod
+    def count_parameters(model):
+        return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
 def build_model(lr=1e-4, max_epochs=2):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -80,6 +90,9 @@ def build_model(lr=1e-4, max_epochs=2):
         iterator_train__shuffle=True,
         iterator_valid__shuffle=False,
         device=device,
+        callbacks=[
+            ReportParams()
+        ],
     )
     return model
 
