@@ -47,7 +47,7 @@ def train_test_set():
 
 
 class ClassifierModule(torch.nn.Module):
-    def __init__(self, backbone, output_dim, freeze=True):
+    def __init__(self, backbone, output_dim, freeze=False):
         super().__init__()
         self.backbone = backbone
 
