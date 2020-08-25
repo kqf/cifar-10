@@ -47,9 +47,13 @@ def train_test_set():
 
 
 class ClassifierModule(torch.nn.Module):
-    def __init__(self, backbone, output_dim):
+    def __init__(self, backbone, output_dim, freeze=True):
         super().__init__()
         self.backbone = backbone
+
+        for parameter in self.backbone.parameters():
+            parameter.requires_grad = not freeze
+
         in_features = backbone.fc.in_features
         self.backbone.fc = torch.nn.Linear(in_features, output_dim)
 
