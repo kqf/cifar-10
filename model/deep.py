@@ -2,6 +2,7 @@ import skorch
 import torch
 import torchvision
 import numpy as np
+from sklearn.metrics import f1_score
 
 
 def tolabels(data):
@@ -77,9 +78,14 @@ def build_model(lr=1e-4, max_epochs=2):
 
 def main():
     X_tr, X_te, y_tr, y_te = train_test_set()
-    model = build_model().fit(X_tr, y_tr)
-    print(model.score(X_tr, y_tr))
-    print(model.score(X_te, y_te))
+    model = build_model()
+    model.fit(X_tr, y_tr)
+
+    f1_tr = f1_score(y_tr, model.predict(X_tr), average="macro")
+    print(f"Train f1: {f1_tr: <5}")
+
+    f1_te = f1_score(y_te, model.predict(X_te), average="macro")
+    print(f"Test f1: {f1_te: <5}".format())
 
 
 if __name__ == "__main__":
