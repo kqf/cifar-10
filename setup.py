@@ -9,7 +9,8 @@ setup(
             "draw-images=model.visualize:draw_images",
             "draw-cnn-features=model.visualize:draw_cnn_features",
             "train-shallow=model.shallow:main",
-            "train=model.cnnfeatures:main",
+            "train-cnn-features=model.cnnfeatures:main",
+            "train-deep-model=model.cnnfeatures:main",
         ],
     }
 )

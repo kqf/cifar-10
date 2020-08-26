@@ -9,6 +9,9 @@ all:
 	-train-shallow
 
 	@echo "Training full model"
-	-train
+	-train-cnn-features
+
+	@echo "Training the deep model"
+	-train-cnn-features
 
 .PHONY: all
